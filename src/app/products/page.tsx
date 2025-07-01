@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { TableProducts } from "../_components/table-products";
-import { getProducts } from "../_data-access/product/get-products";
+import { cachedGetProducts } from "../_data-access/product/get-products";
 
 const ProductsPage = async () => {
-  const products = await getProducts();
+  const products = await cachedGetProducts();
   return (
     <div className="w-full space-y-8 p-8 mx-8 my-8 bg-gray-100 rounded-2xl">
       <div className="flex w-full items-center justify-between">
