@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { PlusIcon } from "lucide-react";
+import { AddProductButton } from "../_components/add-product-button";
 import { TableProducts } from "../_components/table-products";
 import { cachedGetProducts } from "../_data-access/product/get-products";
 
@@ -15,10 +14,7 @@ const ProductsPage = async () => {
           <h2 className="text-xl font-semibold">Produtos</h2>
         </div>
 
-        <Button className="flex items-center cursor-pointer" variant="outline">
-          <PlusIcon className="mr-2 h-4 w-4" />
-          Adicionar Produto
-        </Button>
+        <AddProductButton />
       </div>
 
       <TableProducts products={JSON.parse(JSON.stringify(products))} />
