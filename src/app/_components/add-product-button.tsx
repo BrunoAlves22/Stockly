@@ -21,26 +21,18 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon } from "lucide-react";
+import { Loader2, PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { NumericFormat } from "react-number-format";
-
-const productFormSchema = z.object({
-  name: z.string().trim().min(1, "O nome é obrigatório"),
-  price: z.number().min(0.01, "O valor é obrigatório"),
-  stock: z.coerce
-    .number()
-    .positive({
-      message: "O estoque deve ser maior ou igual a zero",
-    })
-    .int()
-    .min(0, "O estoque é obrigatório"),
-});
-
-type ProductFormSchemaType = z.infer<typeof productFormSchema>;
+import { addProduct } from "@/actions/products/add-product";
+import { useState } from "react";
+import {
+  productFormSchema,
+  ProductFormSchemaType,
+} from "@/actions/products/schema";
 
 export function AddProductButton() {
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const form = useForm<ProductFormSchemaType>({
     shouldUnregister: true,
     resolver: zodResolver(productFormSchema),
@@ -51,12 +43,19 @@ export function AddProductButton() {
     },
   });
 
-  function onSubmit(data: ProductFormSchemaType) {
-    console.log(data);
+  async function onSubmit(data: ProductFormSchemaType) {
+    try {
+      await addProduct(data);
+      setDialogOpen(false);
+      form.reset();
+    } catch (error) {
+      console.error("Erro ao criar produto:", error);
+      // Aqui você pode adicionar lógica para lidar com erros, como exibir uma notificação
+    }
   }
 
   return (
-    <Dialog>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
         <Button
           className="flex items-center cursor-pointer hover:bg-gray-700 hover:text-gray-100"
@@ -107,9 +106,10 @@ export function AddProductButton() {
                       allowNegative={false}
                       customInput={Input}
                       onValueChange={(values) => {
-                        field.onChange(values.floatValue || 0);
+                        field.onChange(values.floatValue);
                       }}
                       {...field}
+                      onChange={() => {}}
                     />
                   </FormControl>
                   <FormMessage />
@@ -126,6 +126,7 @@ export function AddProductButton() {
                     <Input
                       type="number"
                       placeholder="Digite o estoque do produto"
+                      min={0}
                       {...field}
                     />
                   </FormControl>
@@ -140,7 +141,12 @@ export function AddProductButton() {
                   Cancelar
                 </Button>
               </DialogClose>
-              <Button type="submit">Criar Produto</Button>
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Criar Produto
+              </Button>
             </DialogFooter>
           </form>
         </Form>
