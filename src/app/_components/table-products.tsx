@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Product } from "@prisma/client";
-import { Ellipsis } from "lucide-react";
+import { DropdownActions } from "./dropdown-actions";
 
 export function TableProducts({ products }: { products: Product[] }) {
   return (
@@ -47,7 +47,7 @@ export function TableProducts({ products }: { products: Product[] }) {
               </Badge>
             </TableCell>
             <TableCell>
-              <Ellipsis className="w-5 h-5 text-gray-500 cursor-pointer hover:bg-gray-200 rounded-lg transition" />
+              <DropdownActions id={product.id} name={product.name} />
             </TableCell>
           </TableRow>
         ))}

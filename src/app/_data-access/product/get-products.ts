@@ -9,5 +9,6 @@ export const getProducts = async (): Promise<Product[]> => {
 };
 
 export const cachedGetProducts = unstable_cache(getProducts, ["get-products"], {
-  revalidate: 5, // Revalidate every 5 seconds
+  tags: ["get-products"],
+  revalidate: 60, // Revalidate every 60 seconds
 });

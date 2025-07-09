@@ -15,3 +15,9 @@ export const productFormSchema = z.object({
 });
 
 export type ProductFormSchemaType = z.infer<typeof productFormSchema>;
+
+export const deleteProductSchema = z.object({
+  id: z.string().uuid("ID inválido"),
+});
+
+export type DeleteProductSchemaType = z.infer<typeof deleteProductSchema>;

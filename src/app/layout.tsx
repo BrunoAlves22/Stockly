@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Inter } from "next/font/google";
-
+import { Toaster } from "@/components/ui/sonner";
 import { Sidebar } from "./_components/sidebar";
 
 export const metadata: Metadata = {
@@ -29,6 +29,7 @@ export default function RootLayout({
         <div className="flex h-screen">
           <Sidebar />
           {children}
+          <Toaster richColors theme="light" />
         </div>
       </body>
     </html>

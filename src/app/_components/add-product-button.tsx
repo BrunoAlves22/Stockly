@@ -30,6 +30,7 @@ import {
   productFormSchema,
   ProductFormSchemaType,
 } from "@/actions/products/schema";
+import { toast } from "sonner";
 
 export function AddProductButton() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -48,9 +49,12 @@ export function AddProductButton() {
       await addProduct(data);
       setDialogOpen(false);
       form.reset();
+      // Aqui você pode adicionar lógica para atualizar a lista de produtos, se necessário
+      toast.success("Produto criado com sucesso!");
     } catch (error) {
       console.error("Erro ao criar produto:", error);
       // Aqui você pode adicionar lógica para lidar com erros, como exibir uma notificação
+      toast.error("Erro ao criar produto. Tente novamente.");
     }
   }
 
