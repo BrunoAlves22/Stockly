@@ -26,7 +26,12 @@ export function TableProducts({ products }: { products: Product[] }) {
         {products.map((product) => (
           <TableRow key={product.id}>
             <TableCell className="font-medium">{product.name}</TableCell>
-            <TableCell>{product.price.toString()}</TableCell>
+            <TableCell>
+              {Intl.NumberFormat("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              }).format(Number(product.price))}
+            </TableCell>
             <TableCell>{product.stock}</TableCell>
             <TableCell>
               <Badge
