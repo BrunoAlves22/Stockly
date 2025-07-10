@@ -47,7 +47,7 @@ export function TableProducts({ products }: { products: Product[] }) {
               </Badge>
             </TableCell>
             <TableCell>
-              <DropdownActions id={product.id} name={product.name} />
+              <DropdownActions {...product} />
             </TableCell>
           </TableRow>
         ))}

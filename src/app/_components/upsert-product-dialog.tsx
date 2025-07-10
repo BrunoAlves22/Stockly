@@ -1,4 +1,4 @@
-import { addProduct } from "@/actions/products/add-product";
+import { upsertProduct } from "@/actions/products/upsert-product";
 import {
   productFormSchema,
   ProductFormSchemaType,
@@ -28,16 +28,18 @@ import { NumericFormat } from "react-number-format";
 import { toast } from "sonner";
 
 interface UpsertProductDialogProps {
-  setDialogOpen: (open: boolean) => void;
+  defaultValues?: ProductFormSchemaType;
+  setDialogOpen?: (open: boolean) => void;
 }
 
 export function UpsertProductDialog({
+  defaultValues,
   setDialogOpen,
 }: UpsertProductDialogProps) {
   const form = useForm<ProductFormSchemaType>({
     shouldUnregister: true,
     resolver: zodResolver(productFormSchema),
-    defaultValues: {
+    defaultValues: defaultValues ?? {
       name: "",
       price: 0,
       stock: 1,
@@ -46,27 +48,38 @@ export function UpsertProductDialog({
 
   async function onSubmit(data: ProductFormSchemaType) {
     try {
-      await addProduct(data);
-      setDialogOpen(false);
+      await upsertProduct({ ...data, id: defaultValues?.id });
+      setDialogOpen?.(false);
       form.reset();
       // Aqui você pode adicionar lógica para atualizar a lista de produtos, se necessário
-      toast.success("Produto criado com sucesso!");
+      if (defaultValues) {
+        toast.success("Produto atualizado com sucesso!");
+      } else {
+        toast.success("Produto criado com sucesso!");
+      }
     } catch (error) {
       console.error("Erro ao criar produto:", error);
       // Aqui você pode adicionar lógica para lidar com erros, como exibir uma notificação
-      toast.error("Erro ao criar produto. Tente novamente.");
+      toast.error(
+        `Erro ao ${
+          defaultValues ? "editar" : "criar"
+        } produto. Tente novamente.`
+      );
     }
   }
+
+  const isEditing = !!defaultValues;
 
   return (
     <DialogContent>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <DialogHeader>
-            <DialogTitle>Criar Produto</DialogTitle>
+            <DialogTitle>{isEditing ? "Editar" : "Criar"} Produto</DialogTitle>
 
             <DialogDescription>
-              Insira as informações do produto que deseja criar.
+              Insira as informações do produto que deseja{" "}
+              {isEditing ? "editar" : "criar"}.
             </DialogDescription>
           </DialogHeader>
 
@@ -138,7 +151,7 @@ export function UpsertProductDialog({
               {form.formState.isSubmitting && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
-              Criar Produto
+              {isEditing ? "Editar" : "Criar"} Produto
             </Button>
           </DialogFooter>
         </form>

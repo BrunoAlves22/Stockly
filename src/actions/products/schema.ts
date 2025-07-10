@@ -1,6 +1,7 @@
 import z from "zod";
 
 export const productFormSchema = z.object({
+  id: z.string().uuid("ID inválido").optional(),
   name: z.string().trim().min(1, "O nome é obrigatório"),
   price: z
     .number({ required_error: "O valor é obrigatório" })
