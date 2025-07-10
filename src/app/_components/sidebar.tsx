@@ -6,7 +6,7 @@ export function Sidebar() {
   return (
     <div className="w-64 h-full bg-gray-100">
       <div className="px-8 py-6">
-        <h1 className="font-bold text-3xl">Stockly</h1>
+        <h1 className="font-bold text-3xl text-emerald-500">Stockly</h1>
       </div>
 
       <div className="flex flex-col gap-2 p-2 *:px-6 *:py-3 *:justify-start *:cursor-pointer">

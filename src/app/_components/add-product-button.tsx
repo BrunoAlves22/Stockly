@@ -13,7 +13,7 @@ export function AddProductButton() {
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
         <Button
-          className="flex items-center cursor-pointer hover:bg-gray-700 hover:text-gray-100"
+          className="flex items-center cursor-pointer hover:bg-emerald-700 hover:text-gray-100"
           variant="outline"
         >
           <PlusIcon className="mr-2 h-4 w-4" />

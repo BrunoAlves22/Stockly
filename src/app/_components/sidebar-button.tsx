@@ -15,8 +15,10 @@ export function SidebarButton({ href, label, children }: SidebarButtonProps) {
 
   return (
     <Button
-      className={`flex items-center justify-start w-full bg-gray-50 hover:bg-gray-200 hover:text-gray-700 ${
-        pathname === href ? "text-gray-800" : "text-gray-400"
+      className={`flex items-center justify-start w-full bg-gray-50 hover:bg-emerald-100 hover:text-emerald-700 ${
+        pathname === href
+          ? "text-emerald-500 bg-emerald-50 ring-1 ring-emerald-200"
+          : "text-gray-400 bg-gray-100 ring-1 ring-gray-200"
       }`}
       asChild
     >

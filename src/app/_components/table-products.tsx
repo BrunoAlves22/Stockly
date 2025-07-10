@@ -38,14 +38,14 @@ export function TableProducts({ products }: { products: Product[] }) {
                 className={` ${
                   product.stock <= 0
                     ? "bg-gray-300 text-black"
-                    : "bg-green-300 text-black"
+                    : "bg-emerald-300 text-black"
                 }`}
               >
                 <span
                   className={`${
                     product.stock <= 0
                       ? "w-2 h-2 bg-gray-500 rounded-full"
-                      : "w-2 h-2 bg-green-500 rounded-full"
+                      : "w-2 h-2 bg-emerald-500 rounded-full"
                   }`}
                 ></span>
                 {product.stock <= 0 ? "Esgotado" : "Em Estoque"}
