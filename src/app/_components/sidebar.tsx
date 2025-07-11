@@ -13,10 +13,10 @@ export function Sidebar() {
         <SidebarButton href="/" label="Dashboard">
           <LayoutGridIcon className="w-5 h-5" />
         </SidebarButton>
-        <SidebarButton href="/products" label="Products">
+        <SidebarButton href="/products" label="Produtos">
           <BoxIcon className="w-5 h-5" />
         </SidebarButton>
-        <SidebarButton href="/sales" label="Sales">
+        <SidebarButton href="/sales" label="Vendas">
           <ShoppingBasketIcon className="w-5 h-5" />
         </SidebarButton>
       </div>
