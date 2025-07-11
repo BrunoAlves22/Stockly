@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import {
   SheetContent,
   SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
@@ -28,16 +29,18 @@ import {
 } from "@/components/ui/table";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Product } from "@prisma/client";
-import { Plus } from "lucide-react";
-import { useMemo, useState } from "react";
+import { CheckIcon, Plus } from "lucide-react";
+import { Dispatch, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { SalesTableDropdownMenu } from "./table-dropdown-menu";
 import { toast } from "sonner";
+import { createSale } from "@/actions/sale/create-sale";
 
 interface UpsertSalesSheetProps {
   products: Product[];
   productOptions: ComboboxOption[];
+  isOpen: Dispatch<React.SetStateAction<boolean>>;
 }
 
 const salesSchema = z.object({
@@ -57,6 +60,7 @@ interface SelectedProduct {
 export function UpsertSalesSheet({
   productOptions,
   products,
+  isOpen,
 }: UpsertSalesSheetProps) {
   const [selectedProduct, setSelectedProduct] = useState<SelectedProduct[]>([]);
 
@@ -75,8 +79,6 @@ export function UpsertSalesSheet({
 
     if (!selectProduct) return;
 
-    let shouldReset = false;
-
     setSelectedProduct((prev) => {
       const existingProduct = prev.find(
         (product) => product.id === selectProduct.id
@@ -91,8 +93,6 @@ export function UpsertSalesSheet({
           );
           return prev;
         }
-
-        shouldReset = true;
 
         return prev.map((product) =>
           product.id === existingProduct.id
@@ -113,8 +113,6 @@ export function UpsertSalesSheet({
         return prev;
       }
 
-      shouldReset = true;
-
       return [
         ...prev,
         {
@@ -126,10 +124,7 @@ export function UpsertSalesSheet({
       ];
     });
 
-    if (shouldReset) {
-      // ✅ Agora é seguro: fora do setState
-      form.reset();
-    }
+    form.reset();
   };
 
   const productsTotal = useMemo(() => {
@@ -141,6 +136,28 @@ export function UpsertSalesSheet({
 
   const onDelete = (id: string) => {
     setSelectedProduct((prev) => prev.filter((product) => product.id !== id));
+  };
+
+  const onSubmitSale = async () => {
+    try {
+      await createSale({
+        products: selectedProduct.map((product) => ({
+          id: product.id,
+          quantity: product.quantity,
+        })),
+      });
+
+      isOpen(false);
+
+      toast.success("Venda finalizada com sucesso!");
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Erro ao finalizar a venda");
+      }
+      return;
+    }
   };
 
   return (
@@ -251,6 +268,18 @@ export function UpsertSalesSheet({
           </TableRow>
         </TableFooter>
       </Table>
+
+      <SheetFooter>
+        <Button
+          variant="secondary"
+          className="flex items-center cursor-pointer hover:bg-emerald-700 hover:text-gray-100 w-full"
+          disabled={selectedProduct.length === 0}
+          onClick={onSubmitSale}
+        >
+          <CheckIcon className="mr-2 h-4 w-4" />
+          Finalizar
+        </Button>
+      </SheetFooter>
     </SheetContent>
   );
 }

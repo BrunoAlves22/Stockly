@@ -10,7 +10,7 @@ export function Sidebar() {
       </div>
 
       <div className="flex flex-col gap-2 p-2 *:px-6 *:py-3 *:justify-start *:cursor-pointer">
-        <SidebarButton href="/" label="Dashboard">
+        <SidebarButton href="/" label="Início">
           <LayoutGridIcon className="w-5 h-5" />
         </SidebarButton>
         <SidebarButton href="/products" label="Produtos">
