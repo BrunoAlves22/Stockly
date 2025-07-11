@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { UpsertSalesSheet } from "./_components/upsert-sales-sheet";
-import { MinusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { getProducts } from "../_data-access/product/get-products";
 import { ComboboxOption } from "@/components/combobox";
 
 export default async function SalesPage() {
   const products = await getProducts();
+  const productsData = JSON.parse(JSON.stringify(products));
   const productOptions: ComboboxOption[] = products.map((product) => ({
     value: product.id,
     label: product.name,
@@ -28,12 +29,15 @@ export default async function SalesPage() {
               className="flex items-center cursor-pointer hover:bg-emerald-700 hover:text-gray-100"
               variant="outline"
             >
-              <MinusIcon className="mr-2 h-4 w-4" />
+              <PlusIcon className="mr-2 h-4 w-4" />
               Criar Venda
             </Button>
           </SheetTrigger>
 
-          <UpsertSalesSheet productOptions={productOptions} />
+          <UpsertSalesSheet
+            products={productsData}
+            productOptions={productOptions}
+          />
         </Sheet>
       </div>
 
