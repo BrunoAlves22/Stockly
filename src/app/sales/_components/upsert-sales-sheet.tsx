@@ -116,7 +116,7 @@ export function UpsertSalesSheet({
   };
 
   return (
-    <SheetContent className="w-[400px] sm:w-[540px] px-4">
+    <SheetContent className="!max-w-[500px] px-4">
       <SheetHeader>
         <SheetTitle>Nova venda</SheetTitle>
         <SheetDescription>
@@ -219,6 +219,7 @@ export function UpsertSalesSheet({
                 currency: "BRL",
               }).format(productsTotal)}
             </TableCell>
+            <TableCell></TableCell>
           </TableRow>
         </TableFooter>
       </Table>
