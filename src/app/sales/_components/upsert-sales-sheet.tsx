@@ -33,6 +33,7 @@ import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { SalesTableDropdownMenu } from "./table-dropdown-menu";
+import { toast } from "sonner";
 
 interface UpsertSalesSheetProps {
   products: Product[];
@@ -74,12 +75,25 @@ export function UpsertSalesSheet({
 
     if (!selectProduct) return;
 
+    let shouldReset = false;
+
     setSelectedProduct((prev) => {
       const existingProduct = prev.find(
         (product) => product.id === selectProduct.id
       );
 
       if (existingProduct) {
+        const productIsOutOfStock =
+          existingProduct.quantity + data.quantity > selectProduct.stock;
+        if (productIsOutOfStock) {
+          toast.error(
+            `Quantidade excede o estoque disponível (${selectProduct.stock})`
+          );
+          return prev;
+        }
+
+        shouldReset = true;
+
         return prev.map((product) =>
           product.id === existingProduct.id
             ? {
@@ -89,6 +103,17 @@ export function UpsertSalesSheet({
             : product
         );
       }
+
+      const productIsOutOfStock = data.quantity > selectProduct.stock;
+
+      if (productIsOutOfStock) {
+        toast.error(
+          `Quantidade excede o estoque disponível (${selectProduct.stock})`
+        );
+        return prev;
+      }
+
+      shouldReset = true;
 
       return [
         ...prev,
@@ -101,7 +126,10 @@ export function UpsertSalesSheet({
       ];
     });
 
-    form.reset();
+    if (shouldReset) {
+      // ✅ Agora é seguro: fora do setState
+      form.reset();
+    }
   };
 
   const productsTotal = useMemo(() => {

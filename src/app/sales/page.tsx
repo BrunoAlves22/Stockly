@@ -40,8 +40,6 @@ export default async function SalesPage() {
           />
         </Sheet>
       </div>
-
-      {/* <TableProducts products={JSON.parse(JSON.stringify(products))} /> */}
     </div>
   );
 }
