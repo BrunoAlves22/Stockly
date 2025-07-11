@@ -32,6 +32,7 @@ import { Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { SalesTableDropdownMenu } from "./table-dropdown-menu";
 
 interface UpsertSalesSheetProps {
   products: Product[];
@@ -110,8 +111,12 @@ export function UpsertSalesSheet({
     );
   }, [selectedProduct]);
 
+  const onDelete = (id: string) => {
+    setSelectedProduct((prev) => prev.filter((product) => product.id !== id));
+  };
+
   return (
-    <SheetContent className="w-[400px] sm:w-[540px] px-4 ">
+    <SheetContent className="w-[400px] sm:w-[540px] px-4">
       <SheetHeader>
         <SheetTitle>Nova venda</SheetTitle>
         <SheetDescription>
@@ -174,6 +179,7 @@ export function UpsertSalesSheet({
             <TableHead>Valor Unitário</TableHead>
             <TableHead>Quantidade</TableHead>
             <TableHead>Total</TableHead>
+            <TableHead>Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -192,6 +198,12 @@ export function UpsertSalesSheet({
                   style: "currency",
                   currency: "BRL",
                 }).format(product.price * product.quantity)}
+              </TableCell>
+              <TableCell>
+                <SalesTableDropdownMenu
+                  onDelete={onDelete}
+                  product={{ id: product.id }}
+                />
               </TableCell>
             </TableRow>
           ))}
