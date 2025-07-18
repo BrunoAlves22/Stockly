@@ -26,6 +26,7 @@ import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { toast } from "sonner";
+import { useAction } from "next-safe-action/hooks";
 
 interface UpsertProductDialogProps {
   defaultValues?: ProductFormSchemaType;
@@ -36,6 +37,19 @@ export function UpsertProductDialog({
   defaultValues,
   setDialogOpen,
 }: UpsertProductDialogProps) {
+  const isEditing = !!defaultValues;
+  const { execute: executeUpsertProduct } = useAction(upsertProduct, {
+    onSuccess: () => {
+      setDialogOpen?.(false);
+      toast.success(`Produto ${isEditing ? "editado" : "criado"} com sucesso!`);
+    },
+    onError: () => {
+      toast.error(
+        `Erro ao ${isEditing ? "editar" : "criar"} produto. Tente novamente.`
+      );
+    },
+  });
+
   const form = useForm<ProductFormSchemaType>({
     shouldUnregister: true,
     resolver: zodResolver(productFormSchema),
@@ -47,28 +61,8 @@ export function UpsertProductDialog({
   });
 
   async function onSubmit(data: ProductFormSchemaType) {
-    try {
-      await upsertProduct({ ...data, id: defaultValues?.id });
-      setDialogOpen?.(false);
-      form.reset();
-      // Aqui você pode adicionar lógica para atualizar a lista de produtos, se necessário
-      if (defaultValues) {
-        toast.success("Produto atualizado com sucesso!");
-      } else {
-        toast.success("Produto criado com sucesso!");
-      }
-    } catch (error) {
-      console.error("Erro ao criar produto:", error);
-      // Aqui você pode adicionar lógica para lidar com erros, como exibir uma notificação
-      toast.error(
-        `Erro ao ${
-          defaultValues ? "editar" : "criar"
-        } produto. Tente novamente.`
-      );
-    }
+    await executeUpsertProduct({ ...data, id: defaultValues?.id });
   }
-
-  const isEditing = !!defaultValues;
 
   return (
     <DialogContent>
