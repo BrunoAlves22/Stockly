@@ -13,7 +13,7 @@ type ProductPick = Pick<Product, "id" | "name">;
 
 interface AlertDialogDeleteProps {
   product: ProductPick;
-  handleDeleteProduct: (props: { productId: string }) => Promise<void>;
+  handleDeleteProduct: () => void;
 }
 
 export function AlertDialogDelete({
@@ -34,9 +34,7 @@ export function AlertDialogDelete({
       </AlertDialogHeader>
       <AlertDialogFooter className="*:cursor-pointer">
         <AlertDialogCancel>Cancelar</AlertDialogCancel>
-        <AlertDialogAction
-          onClick={() => handleDeleteProduct({ productId: product.id })}
-        >
+        <AlertDialogAction onClick={() => handleDeleteProduct()}>
           Continuar
         </AlertDialogAction>
       </AlertDialogFooter>

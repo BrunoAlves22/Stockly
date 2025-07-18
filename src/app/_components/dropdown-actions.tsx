@@ -17,13 +17,18 @@ import { AlertDialogDelete } from "./alert-dialog-delete";
 import { Product } from "@prisma/client";
 import { UpsertProductDialog } from "./upsert-product-dialog";
 import { useState } from "react";
-
-type DeleteProductProps = {
-  productId: string;
-};
+import { useAction } from "next-safe-action/hooks";
 
 export function DropdownActions({ id, name, price, stock }: Product) {
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const { execute: executeDeleteProduct } = useAction(deleteProduct, {
+    onSuccess: () => {
+      toast.success("Produto excluído com sucesso!");
+    },
+    onError: () => {
+      toast.error("Erro ao excluir produto. Tente novamente.");
+    },
+  });
   const copyToClipboard = () => {
     try {
       navigator.clipboard.writeText(id);
@@ -34,15 +39,7 @@ export function DropdownActions({ id, name, price, stock }: Product) {
     }
   };
 
-  const handleDeleteProduct = async ({ productId }: DeleteProductProps) => {
-    try {
-      await deleteProduct({ id: productId });
-      toast.success("Produto excluído com sucesso!");
-    } catch (error) {
-      console.error("Erro ao excluir produto:", error);
-      toast.error("Erro ao excluir produto. Tente novamente.");
-    }
-  };
+  const handleDeleteProduct = () => executeDeleteProduct({ id });
 
   return (
     <AlertDialog>
