@@ -36,6 +36,8 @@ import { z } from "zod";
 import { SalesTableDropdownMenu } from "./table-dropdown-menu";
 import { toast } from "sonner";
 import { createSale } from "@/actions/sale/create-sale";
+import { useAction } from "next-safe-action/hooks";
+import { flattenValidationErrors } from "next-safe-action";
 
 interface UpsertSalesSheetProps {
   products: Product[];
@@ -63,7 +65,16 @@ export function UpsertSalesSheet({
   isOpen,
 }: UpsertSalesSheetProps) {
   const [selectedProduct, setSelectedProduct] = useState<SelectedProduct[]>([]);
-
+  const { execute: executeCreateSale } = useAction(createSale, {
+    onError: ({ error: { validationErrors, serverError } }) => {
+      const flattenedErrors = flattenValidationErrors(validationErrors);
+      toast.error(serverError ?? flattenedErrors.formErrors[0]);
+    },
+    onSuccess: () => {
+      toast.success("Venda criada com sucesso!");
+      isOpen(false);
+    },
+  });
   const form = useForm<SalesFormData>({
     resolver: zodResolver(salesSchema),
     defaultValues: {
@@ -139,25 +150,12 @@ export function UpsertSalesSheet({
   };
 
   const onSubmitSale = async () => {
-    try {
-      await createSale({
-        products: selectedProduct.map((product) => ({
-          id: product.id,
-          quantity: product.quantity,
-        })),
-      });
-
-      isOpen(false);
-
-      toast.success("Venda finalizada com sucesso!");
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("Erro ao finalizar a venda");
-      }
-      return;
-    }
+    executeCreateSale({
+      products: selectedProduct.map((product) => ({
+        id: product.id,
+        quantity: product.quantity,
+      })),
+    });
   };
 
   return (
